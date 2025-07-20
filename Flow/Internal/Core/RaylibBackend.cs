@@ -1,5 +1,8 @@
-﻿using Raylib_cs;
+﻿using Flow.Internal.Platform.Windows;
+using Raylib_cs;
 using System.Numerics;
+using System.Runtime.InteropServices;
+using System.Security.AccessControl;
 
 namespace Flow.Internal.Core
 {
@@ -12,15 +15,21 @@ namespace Flow.Internal.Core
         private static Rectangle _sourceRect;
         private static Rectangle _destRect;
         private static Vector2i _lastNonFullscreenSize;
+        private double _titleUpdateTimer = 0;
+        private const double _titleUpdateInterval = 1.0; // 1秒
 
-        public void Init()
+        public unsafe void Init()
         {
             // ----------------------------
             // ConfigFlags設定
             // ----------------------------
             if (Window.IsResizable)
             {
-                Raylib.SetWindowState(ConfigFlags.ResizableWindow);
+                Raylib.SetConfigFlags(ConfigFlags.ResizableWindow);
+            }
+            if (Window.IsUndecoratedWindow)
+            {
+                Raylib.SetConfigFlags(ConfigFlags.UndecoratedWindow);
             }
             if (Flow.MaxFPS > 0)
             {
@@ -28,7 +37,7 @@ namespace Flow.Internal.Core
             }
             if (Flow.IsVSyncEnabled)
             {
-                Raylib.SetWindowState(ConfigFlags.VSyncHint);
+                Raylib.SetConfigFlags(ConfigFlags.VSyncHint);
             }
             if (!Flow.IsLogEnabled)
             {
@@ -50,6 +59,20 @@ namespace Flow.Internal.Core
             // ----------------------------
             CalculateRenderMode();
 
+            // ----------------------------
+            // ダークモード適応 
+            // ----------------------------
+            if (Win32Api.IsDarkModeEnabled() && OperatingSystem.IsWindows())
+            {
+                nint hwnd = (nint)Raylib.GetWindowHandle();
+                Win32Api.SetDarkModeTitleBar(hwnd, true);
+                Win32Api.RefreshWindowLayout(hwnd);
+            }
+
+            // ----------------------------
+            // イベント登録
+            // ----------------------------
+
             Window.OnResized += () => {
                 _lastNonFullscreenSize = Window.Size;
                 CalculateRenderMode();
@@ -65,6 +88,10 @@ namespace Flow.Internal.Core
 
         public void Update()
         {
+            Flow.CurrentFPS = Raylib.GetFPS();
+            Flow.DeltaTime = Raylib.GetFrameTime();
+            Flow.Time += Flow.DeltaTime;
+
             // ----------------------------
             // ウィンドウサイズ変更の検出と同期
             // ----------------------------
@@ -83,6 +110,16 @@ namespace Flow.Internal.Core
             if (Raylib.IsKeyPressed(KeyboardKey.F11) || Raylib.IsKeyPressed(KeyboardKey.Enter) && (Raylib.IsKeyDown(KeyboardKey.LeftAlt) || Raylib.IsKeyDown(KeyboardKey.RightAlt)))
             {
                 ToggleFullScreen();
+            }
+
+            // ----------------------------
+            // タイトル更新（1秒に1回）
+            // ----------------------------
+            _titleUpdateTimer += Raylib.GetFrameTime(); // フレーム時間加算
+            if (_titleUpdateTimer >= _titleUpdateInterval)
+            {
+                SetTitleWithFPS();
+                _titleUpdateTimer = 0;
             }
         }
 
@@ -127,19 +164,29 @@ namespace Flow.Internal.Core
         /// <summary>
         /// フルスクリーンモードを切り替えます。
         /// </summary>
-        private static void ToggleFullScreen()
+        private static unsafe void ToggleFullScreen()
         {
             if (Window.IsFullScreen)
             {
                 Raylib.ToggleBorderlessWindowed();
                 Window.ResizeOnlyProp(_lastNonFullscreenSize.X, _lastNonFullscreenSize.Y);
                 Window.MoveOnlyProp(Raylib.GetWindowPosition());
+
+                // タイトルバーなしの場合ちゃんと戻す
+                if (Window.IsUndecoratedWindow) Raylib.SetWindowState(ConfigFlags.UndecoratedWindow);
             }
             else
             {
                 Raylib.ToggleBorderlessWindowed();
                 Window.ResizeOnlyProp(Monitor.Width, Monitor.Height);
                 Window.MoveOnlyProp(Raylib.GetWindowPosition());
+
+                // TopMostを解除
+                if (OperatingSystem.IsWindows())
+                {
+                    nint hwnd = (nint)Raylib.GetWindowHandle();
+                    Win32Api.RemoveTopMost(hwnd);
+                }
             }
 
             Window.IsFullScreen = !Window.IsFullScreen;
@@ -183,7 +230,7 @@ namespace Flow.Internal.Core
         private static void SetTitleWithFPS()
         {
             if (!Flow.IsShowTitleInfo) return;
-            Raylib.SetWindowTitle($"{Window.Title} | FPS {Raylib.GetFPS()} | W {Window.Size.X}x{Window.Size.Y} | RS {RenderSurface.Width}x{RenderSurface.Height}");
+            Raylib.SetWindowTitle($"{Window.Title} | FPS {Flow.CurrentFPS} | W {Window.Size.X}x{Window.Size.Y} | RS {RenderSurface.Width}x{RenderSurface.Height}");
         }
         #endregion
     }

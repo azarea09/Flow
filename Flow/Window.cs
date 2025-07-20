@@ -84,6 +84,9 @@ namespace Flow
         /// <summary> リサイズ可能かどうか </summary>
         public static bool IsResizable { get; set; } = true;
 
+        /// <summary> タイトルバーなしのウィンドウにするかどうか </summary>
+        public static bool IsUndecoratedWindow { get; set; } = false;
+
         /// <summary> ウィンドウがアクティブかどうか </summary>
         public static bool IsFocused
         {

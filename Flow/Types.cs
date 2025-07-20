@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System.Globalization;
+using System.Numerics;
 
 namespace Flow
 {
@@ -132,6 +133,50 @@ namespace Flow
             return HashCode.Combine(R, G, B, A);
         }
 
+        /// <summary> HTMLカラーコード (#RGB, #RGBA, #RRGGBB, #RRGGBBAA) から変換 </summary>
+        public static Color4 FromHtml(string html)
+        {
+            if (string.IsNullOrWhiteSpace(html))
+                throw new ArgumentException("HTML color string is null or empty.");
+
+            if (html[0] == '#')
+                html = html.Substring(1);
+
+            switch (html.Length)
+            {
+                case 3: // #RGB
+                    return new Color4(
+                        Convert.ToInt32(new string(html[0], 2), 16),
+                        Convert.ToInt32(new string(html[1], 2), 16),
+                        Convert.ToInt32(new string(html[2], 2), 16),
+                        255
+                    );
+                case 4: // #RGBA
+                    return new Color4(
+                        Convert.ToInt32(new string(html[0], 2), 16),
+                        Convert.ToInt32(new string(html[1], 2), 16),
+                        Convert.ToInt32(new string(html[2], 2), 16),
+                        Convert.ToInt32(new string(html[3], 2), 16)
+                    );
+                case 6: // #RRGGBB
+                    return new Color4(
+                        int.Parse(html.Substring(0, 2), NumberStyles.HexNumber),
+                        int.Parse(html.Substring(2, 2), NumberStyles.HexNumber),
+                        int.Parse(html.Substring(4, 2), NumberStyles.HexNumber),
+                        255
+                    );
+                case 8: // #RRGGBBAA
+                    return new Color4(
+                        int.Parse(html.Substring(0, 2), NumberStyles.HexNumber),
+                        int.Parse(html.Substring(2, 2), NumberStyles.HexNumber),
+                        int.Parse(html.Substring(4, 2), NumberStyles.HexNumber),
+                        int.Parse(html.Substring(6, 2), NumberStyles.HexNumber)
+                    );
+                default:
+                    throw new FormatException("Invalid HTML color format.");
+            }
+        }
+
         // ----------------------------
         // 変換
         // ----------------------------
@@ -162,6 +207,8 @@ namespace Flow
         public static readonly Color4 Green = new Color4(0, 255, 0);
         public static readonly Color4 Blue = new Color4(0, 0, 255);
         public static readonly Color4 White = new Color4(255, 255, 255);
+        public static readonly Color4 OffWhite = new Color4(250, 250, 250);
+        public static readonly Color4 WhiteSmoke = new Color4(245, 245, 245);
         public static readonly Color4 Black = new Color4(0, 0, 0);
         public static readonly Color4 Transparent = new Color4(0, 0, 0, 0);
         public static readonly Color4 Gray = new Color4(128, 128, 128);

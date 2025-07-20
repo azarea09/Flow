@@ -1,20 +1,25 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 	<!-- NativeAOTを有効に -->
 	<PublishAot>true</PublishAot>
 	<!-- 不要なシンボル除去 -->
-	<StripSymbols>true</StripSymbols>
+	<StripSymbols>truea	</StripSymbols>
 	<!-- 不要なメタデータ削減 -->
 	<IlcGenerateCompleteTypeMetadata>false</IlcGenerateCompleteTypeMetadata>
 	<!-- グローバル化コード削減 -->
 	<InvariantGlobalization>true</InvariantGlobalization>
 	<!-- 明示的に速度優先 -->
 	<OptimizationPreference>Speed</OptimizationPreference>
+  </PropertyGroup>
+
+  <!-- Releaseビルドのときだけ .pdb を生成しない -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+  	<DebugType>none</DebugType>
   </PropertyGroup>
 
   <ItemGroup>
