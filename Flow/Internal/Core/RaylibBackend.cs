@@ -9,14 +9,14 @@ namespace Flow.Internal.Core
     internal class RaylibBackend : IBackend
     {
         private static RenderTexture2D _target;
+        private const double TitleUpdateInterval = 1.0; // 1秒
 
         // キャッシュ用変数
         private static bool _isDirectDraw = false;
         private static Rectangle _sourceRect;
         private static Rectangle _destRect;
         private static Vector2i _lastNonFullscreenSize;
-        private double _titleUpdateTimer = 0;
-        private const double _titleUpdateInterval = 1.0; // 1秒
+        private double _lastTitleUpdateTime = 0;
 
         public unsafe void Init()
         {
@@ -115,11 +115,10 @@ namespace Flow.Internal.Core
             // ----------------------------
             // タイトル更新（1秒に1回）
             // ----------------------------
-            _titleUpdateTimer += Raylib.GetFrameTime(); // フレーム時間加算
-            if (_titleUpdateTimer >= _titleUpdateInterval)
+            if (Flow.Time - _lastTitleUpdateTime >= TitleUpdateInterval)
             {
                 SetTitleWithFPS();
-                _titleUpdateTimer = 0;
+                _lastTitleUpdateTime = Flow.Time;
             }
         }
 

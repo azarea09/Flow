@@ -115,7 +115,7 @@ namespace Flow
         }
 
 
-        internal static void MoveOnlyProp(Vector2 pos)
+        internal static void MoveOnlyProp(Vector2i pos)
         {
             _isMoveOnlyProp = true;
             Position = new Vector2i((int)pos.X, (int)pos.Y);
