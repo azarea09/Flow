@@ -2,7 +2,7 @@
 
 namespace Flow
 {
-    public class Texture
+    public class Texture : IDisposable
     {
         /// <summary> RaylibのTexture2D </summary>
         public Texture2D RayTexture { get; private set; }
@@ -99,6 +99,19 @@ namespace Flow
 
             Rlgl.SetBlendMode(BlendMode.Alpha);
         }
+
+        public void Dispose()
+        {
+            Raylib.UnloadTexture(RayTexture);
+            IsEnable = false;
+            GC.SuppressFinalize(this);
+        }
+
+        ~Texture()
+        {
+            Dispose();
+        }
+
         private void SetBlend(BlendState blendState)
         {
             switch (blendState)
