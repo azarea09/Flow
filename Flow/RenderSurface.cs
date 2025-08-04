@@ -20,7 +20,7 @@
         }
 
         /// <summary> レンダーサーフェスのフィルタリングモード </summary>
-        public static RenderSurfaceFilter Filter { get; set; } = RenderSurfaceFilter.Bilinear;
+        public static Filter Filter { get; set; } = Filter.Bilinear;
 
         /// <summary> レンダーサーフェスを使用するかどうか </summary>
         public static bool UseRenderSurface { get; set; } = true;
@@ -33,12 +33,5 @@
             Width = width;
             Height = height;
         }
-    }
-
-    public enum RenderSurfaceFilter
-    {
-        Nearest = 0,
-        Bilinear = 1,
-        Trilinear = 2,
     }
 }

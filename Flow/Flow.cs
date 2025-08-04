@@ -11,13 +11,10 @@
         public static double Time { get; internal set; }
 
         /// <summary> 最大FPS </summary>
-        public static int MaxFPS { get; set; } = 500;
+        public static int MaxFPS { get; set; } = 1000;
 
         /// <summary> VSyncが有効かどうか </summary>
-        public static bool IsVSyncEnabled { get; set; } = false;
-
-        /// <summary> タイトルにFPSなどの情報を出すかどうか </summary>
-        public static bool IsShowTitleInfo { get; set; } = true;
+        public static bool Vsync { get; set; } = false;
 
         /// <summary> 背景色 </summary>
         public static Color4 BackgroundColor { get; set; } = Color4.WhiteSmoke;

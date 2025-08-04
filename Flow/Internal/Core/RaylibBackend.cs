@@ -1,8 +1,5 @@
 ﻿using Flow.Internal.Platform.Windows;
-using Raylib_cs;
 using System.Numerics;
-using System.Runtime.InteropServices;
-using System.Security.AccessControl;
 
 namespace Flow.Internal.Core
 {
@@ -35,7 +32,7 @@ namespace Flow.Internal.Core
             {
                 Raylib.SetTargetFPS(Flow.MaxFPS);
             }
-            if (Flow.IsVSyncEnabled)
+            if (Flow.Vsync)
             {
                 Raylib.SetConfigFlags(ConfigFlags.VSyncHint);
             }
@@ -44,7 +41,7 @@ namespace Flow.Internal.Core
                 Raylib.SetTraceLogLevel(TraceLogLevel.None);
             }
 
-            Raylib.InitWindow(Window.Size.X, Window.Size.Y, Flow.IsShowTitleInfo ? $"{Window.Title} | FPS {Raylib.GetFPS()} | W {Window.Size.X}x{Window.Size.Y} | RS {RenderSurface.Size.X}x{RenderSurface.Size.Y}" : $"{Window.Title}");
+            Raylib.InitWindow(Window.Size.X, Window.Size.Y, Window.IsShowInfoInTitle ? $"{Window.Title} | FPS {Raylib.GetFPS()} | W {Window.Size.X}x{Window.Size.Y} | RS {RenderSurface.Size.X}x{RenderSurface.Size.Y}" : $"{Window.Title}");
             Window.Position = Raylib.GetWindowPosition();
             _lastNonFullscreenSize = Window.Size;
 
@@ -62,7 +59,7 @@ namespace Flow.Internal.Core
             // ----------------------------
             // ダークモード適応 
             // ----------------------------
-            if (Win32Api.IsDarkModeEnabled() && OperatingSystem.IsWindows())
+            if (Window.IsUseDarkMode && OperatingSystem.IsWindows())
             {
                 nint hwnd = (nint)Raylib.GetWindowHandle();
                 Win32Api.SetDarkModeTitleBar(hwnd, true);
@@ -73,13 +70,15 @@ namespace Flow.Internal.Core
             // イベント登録
             // ----------------------------
 
-            Window.OnResized += () => {
+            Window.OnResized += () =>
+            {
                 _lastNonFullscreenSize = Window.Size;
                 CalculateRenderMode();
                 SetTitleWithFPS();
             };
 
-            Window.OnMoved += () => {
+            Window.OnMoved += () =>
+            {
                 _lastNonFullscreenSize = Window.Size;
                 CalculateRenderMode();
                 SetTitleWithFPS();
@@ -90,7 +89,7 @@ namespace Flow.Internal.Core
         {
             Flow.CurrentFPS = Raylib.GetFPS();
             Flow.DeltaTime = Raylib.GetFrameTime();
-            Flow.Time += Flow.DeltaTime;
+            Flow.Time = Raylib.GetTime();
 
             // ----------------------------
             // ウィンドウサイズ変更の検出と同期
@@ -199,7 +198,7 @@ namespace Flow.Internal.Core
         {
             // 直接描画可能かどうかの判定をキャッシュ
             _isDirectDraw = (Window.IsFullScreen && Monitor.Width == RenderSurface.Width && Monitor.Height == RenderSurface.Height) ||
-                (!Window.IsFullScreen && _lastNonFullscreenSize.X == RenderSurface.Width && _lastNonFullscreenSize.Y == RenderSurface.Height)　||
+                (!Window.IsFullScreen && _lastNonFullscreenSize.X == RenderSurface.Width && _lastNonFullscreenSize.Y == RenderSurface.Height) ||
                 !RenderSurface.UseRenderSurface;
 
             if (!_isDirectDraw)
@@ -228,7 +227,7 @@ namespace Flow.Internal.Core
 
         private static void SetTitleWithFPS()
         {
-            if (!Flow.IsShowTitleInfo) return;
+            if (!Window.IsShowInfoInTitle) return;
             Raylib.SetWindowTitle($"{Window.Title} | FPS {Flow.CurrentFPS} | W {Window.Size.X}x{Window.Size.Y} | RS {RenderSurface.Width}x{RenderSurface.Height}");
         }
         #endregion

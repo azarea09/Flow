@@ -1,5 +1,4 @@
 ﻿using Flow.Internal.Core;
-using System.Xml.Linq;
 
 namespace Flow
 {
@@ -15,7 +14,7 @@ namespace Flow
         protected abstract void End();
         public void Run()
         {
-            var backend = BackendFactory.Create(BackendFactory.GetBackendType());
+            var backend = new RaylibBackend();
 
             Init(); // Window初期化前の処理
             backend.Init(); // Windowの初期化

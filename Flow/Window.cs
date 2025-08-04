@@ -1,7 +1,4 @@
-﻿using Raylib_cs;
-using System.Numerics;
-
-namespace Flow
+﻿namespace Flow
 {
     public static class Window
     {
@@ -24,7 +21,13 @@ namespace Flow
 
 
         /// <summary> ウィンドウのタイトル </summary>
-        public static String Title { get; set; } = "Flow";
+        public static string Title { get; set; } = "Flow";
+
+        /// <summary> タイトルにFPSなどの情報を出すかどうか </summary>
+        public static bool IsShowInfoInTitle { get; set; } = true;
+
+        /// <summary> タイトルをダークモードにするかどうか </summary>
+        public static bool IsUseDarkMode { get; set; } = false;
 
         /// <summary> ウィンドウのサイズ (px) </summary>
         public static Vector2i Size
@@ -74,7 +77,7 @@ namespace Flow
                 {
                     Raylib.SetWindowPosition(_position.X, _position.Y);
                     OnMoved?.Invoke(); // 通知
-                }  
+                }
             }
         }
 

@@ -1,6 +1,4 @@
-﻿using Raylib_cs;
-
-namespace Flow
+﻿namespace Flow
 {
     public static class Monitor
     {
