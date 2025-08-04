@@ -14,6 +14,12 @@ namespace Flow
             Y = y;
         }
 
+        public Vector2i(int i)
+        {
+            X = i;
+            Y = i;
+        }
+
         public static Vector2i Zero => new Vector2i(0, 0);
 
         public static Vector2i One => new Vector2i(1, 1);
@@ -128,6 +134,12 @@ namespace Flow
             Y = y;
         }
 
+        public Vector2d(double i)
+        {
+            X = i;
+            Y = i;
+        }
+
         public static Vector2d Zero => new Vector2d(0, 0);
 
         public static Vector2d One => new Vector2d(1, 1);
@@ -162,6 +174,19 @@ namespace Flow
         public static Vector2d operator -(Vector2d left, Vector2d right)
         {
             return new Vector2d(left.X - right.X, left.Y - right.Y);
+        }
+
+        public static Vector2d operator *(Vector2d left, Vector2d right)
+        {
+            return new Vector2d(left.X * right.X, left.Y * right.Y);
+        }
+
+        public static Vector2d operator /(Vector2d left, Vector2d right)
+        {
+            if (right.X == 0 || right.Y == 0)
+                throw new DivideByZeroException("Division by zero in component-wise Vector2d division.");
+
+            return new Vector2d(left.X / right.X, left.Y / right.Y);
         }
 
         public static Vector2d operator *(Vector2d left, double right)

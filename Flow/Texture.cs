@@ -75,7 +75,7 @@ namespace Flow
                 drawArea = new Rectd(0, 0, Size.X, Size.Y);
             }
 
-            Vector2d drawAreaSize = new Vector2d(drawArea.Value.Width - drawArea.Value.X, drawArea.Value.Height - drawArea.Value.Y);
+            Vector2d drawAreaSize = new Vector2d((drawArea.Value.Width - drawArea.Value.X), drawArea.Value.Height - drawArea.Value.Y);
             Vector2d screenSize = RenderSurface.UseRenderSurface ? RenderSurface.Size : Window.Size;
             Rectangle sourceRect = new Rectangle((float)drawArea.Value.X, (float)drawArea.Value.Y, (float)drawArea.Value.Width, (float)drawArea.Value.Height);
             Rectangle destRect = new Rectangle((float)x, (float)y, (float)(drawAreaSize.X * Scale.X), (float)(drawAreaSize.Y * Scale.Y));
@@ -85,7 +85,7 @@ namespace Flow
                 RayTexture,
                 sourceRect,
                 destRect,
-                -GetAnchorOffset(screenSize) + GetOriginOffset(drawAreaSize),
+                -GetAnchorOffset(screenSize) + GetOriginOffset(drawAreaSize * Scale),
                 (float)Rotation,
                 Color3.ToRaylibColorWithOpacity(Color, Opacity)
             );

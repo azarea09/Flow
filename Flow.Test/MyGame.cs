@@ -7,6 +7,7 @@
         protected override void Init()
         {
             Flow.MaxFPS = 0;
+            RenderSurface.UseRenderSurface = false;
             RenderSurface.Size = new Vector2i(1920, 1080);
         }
 
@@ -25,7 +26,9 @@
 
         protected override void Draw()
         {
-            texture.Scale = new Vector2d(2, 2);
+            texture.Scale = new Vector2d(1);
+            texture.Anchor = Anchor.BottomRight;
+            texture.Origin = Anchor.BottomRight;
             texture.Draw(0, 0, new Rectd(0, 0, 256, 256));
 
             Raylib_cs.Raylib.DrawFPS(10, 10);
