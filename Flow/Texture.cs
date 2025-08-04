@@ -21,6 +21,8 @@ namespace Flow
         public double Opacity = 255;
         /// <summary> 描画色 </summary>
         public Color3 Color = Color3.White;
+        /// <summary> 描画のブレンド状態 </summary>
+        public BlendState BlendState = BlendState.Alpha;
         /// <summary> 画面上に配置する基準 </summary>
         public Anchor Anchor = Anchor.TopLeft;
         /// <summary> テクスチャの描画エリアの基準 </summary>
@@ -77,8 +79,13 @@ namespace Flow
 
             Vector2d drawAreaSize = new Vector2d((drawArea.Value.Width - drawArea.Value.X), drawArea.Value.Height - drawArea.Value.Y);
             Vector2d screenSize = RenderSurface.UseRenderSurface ? RenderSurface.Size : Window.Size;
+
+            // テクスチャから描画に使う範囲
             Rectangle sourceRect = new Rectangle((float)drawArea.Value.X, (float)drawArea.Value.Y, (float)drawArea.Value.Width, (float)drawArea.Value.Height);
+            // 描画先の矩形
             Rectangle destRect = new Rectangle((float)x, (float)y, (float)(drawAreaSize.X * Scale.X), (float)(drawAreaSize.Y * Scale.Y));
+
+            SetBlend(BlendState);
 
             Raylib.DrawTexturePro
             (
@@ -89,7 +96,36 @@ namespace Flow
                 (float)Rotation,
                 Color3.ToRaylibColorWithOpacity(Color, Opacity)
             );
+
+            Rlgl.SetBlendMode(BlendMode.Alpha);
         }
+        private void SetBlend(BlendState blendState)
+        {
+            switch (blendState)
+            {
+                case BlendState.Alpha:
+                    Rlgl.SetBlendMode(BlendMode.AlphaPremultiply);
+                    break;
+                case BlendState.Additive:
+                    Rlgl.SetBlendFactorsSeparate(Rlgl.ONE, Rlgl.ONE, Rlgl.ONE, Rlgl.ONE, Rlgl.FUNC_ADD, Rlgl.FUNC_ADD);
+                    Rlgl.SetBlendMode(BlendMode.CustomSeparate); 
+                    break;
+                case BlendState.Subtract:
+                    Rlgl.SetBlendFactorsSeparate(Rlgl.ONE, Rlgl.ONE, Rlgl.ONE, Rlgl.ONE, Rlgl.FUNC_REVERSE_SUBTRACT, Rlgl.FUNC_ADD);
+                    Rlgl.SetBlendMode(BlendMode.CustomSeparate);
+                    break;
+                case BlendState.Multiply:
+                    Rlgl.SetBlendFactorsSeparate(Rlgl.DST_COLOR, Rlgl.ZERO, Rlgl.ONE, Rlgl.ONE, Rlgl.FUNC_ADD, Rlgl.FUNC_ADD);
+                    Rlgl.SetBlendMode(BlendMode.CustomSeparate);
+                    break;
+                case BlendState.Screen:
+                    Rlgl.SetBlendFactorsSeparate(Rlgl.ONE, Rlgl.ONE_MINUS_SRC_COLOR, Rlgl.ONE, Rlgl.ONE, Rlgl.FUNC_ADD, Rlgl.FUNC_ADD);
+                    Rlgl.SetBlendMode(BlendMode.CustomSeparate);
+                    break;
+                default:
+                    break;
+            }
+        }   
 
         private Vector2d GetAnchorOffset(Vector2d screenSize)
         {
@@ -109,6 +145,7 @@ namespace Flow
         }
 
         private Vector2d GetOriginOffset(Vector2d drawAreaSize)
+
         {
             return Origin switch
             {

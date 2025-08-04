@@ -7,7 +7,6 @@
         protected override void Init()
         {
             Flow.MaxFPS = 0;
-            RenderSurface.UseRenderSurface = false;
             RenderSurface.Size = new Vector2i(1920, 1080);
         }
 
@@ -27,9 +26,9 @@
         protected override void Draw()
         {
             texture.Scale = new Vector2d(1);
-            texture.Anchor = Anchor.BottomRight;
-            texture.Origin = Anchor.BottomRight;
-            texture.Draw(0, 0, new Rectd(0, 0, 256, 256));
+            texture.Anchor = Anchor.Center;
+            texture.Origin = Anchor.Center;
+            texture.Draw(0, 0);
 
             Raylib_cs.Raylib.DrawFPS(10, 10);
             Raylib_cs.Raylib.DrawText($"DeltaTime {Flow.DeltaTime}", 10, 30, 20, Raylib_cs.Color.Red);
