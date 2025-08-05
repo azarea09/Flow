@@ -24,7 +24,7 @@
         public static string Title { get; set; } = "Flow";
 
         /// <summary> タイトルにFPSなどの情報を出すかどうか </summary>
-        public static bool IsShowInfoInTitle { get; set; } = true;
+        public static bool ShowInfoTitle { get; set; } = true;
 
         /// <summary> タイトルをダークモードにするかどうか </summary>
         public static bool IsUseDarkMode { get; set; } = false;

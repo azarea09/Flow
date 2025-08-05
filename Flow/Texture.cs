@@ -61,8 +61,6 @@ namespace Flow
                 throw new Exception($"Failed to load texture from {path}");
             }
 
-            Console.WriteLine($"Texture loaded: {path} ({RayTexture.Width}x{RayTexture.Height})");
-
             IsEnable = true;
             FileName = path;
             Size = new Vector2d(RayTexture.Width, RayTexture.Height);

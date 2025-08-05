@@ -41,7 +41,7 @@ namespace Flow.Internal.Core
                 Raylib.SetTraceLogLevel(TraceLogLevel.None);
             }
 
-            Raylib.InitWindow(Window.Size.X, Window.Size.Y, Window.IsShowInfoInTitle ? $"{Window.Title} | FPS {Raylib.GetFPS()} | W {Window.Size.X}x{Window.Size.Y} | RS {RenderSurface.Size.X}x{RenderSurface.Size.Y}" : $"{Window.Title}");
+            Raylib.InitWindow(Window.Size.X, Window.Size.Y, Window.ShowInfoTitle ? RenderSurface.UseRenderSurface ? $"{Window.Title} | FPS {Raylib.GetFPS()} | W {Window.Size.X}x{Window.Size.Y} | RS {RenderSurface.Size.X}x{RenderSurface.Size.Y}" : $"{Window.Title} | FPS {Raylib.GetFPS()} | W {Window.Size.X}x{Window.Size.Y}" : $"{Window.Title}");
             Window.Position = Raylib.GetWindowPosition();
             _lastNonFullscreenSize = Window.Size;
 
@@ -227,8 +227,8 @@ namespace Flow.Internal.Core
 
         private static void SetTitleWithFPS()
         {
-            if (!Window.IsShowInfoInTitle) return;
-            Raylib.SetWindowTitle($"{Window.Title} | FPS {Flow.CurrentFPS} | W {Window.Size.X}x{Window.Size.Y} | RS {RenderSurface.Width}x{RenderSurface.Height}");
+            if (!Window.ShowInfoTitle) return;
+            Raylib.SetWindowTitle(RenderSurface.UseRenderSurface ? $"{Window.Title} | FPS {Flow.CurrentFPS} | W {Window.Size.X}x{Window.Size.Y} | RS {RenderSurface.Size.X}x{RenderSurface.Size.Y}" : $"{Window.Title} | FPS {Flow.CurrentFPS} | W {Window.Size.X}x{Window.Size.Y}");
         }
         #endregion
     }
