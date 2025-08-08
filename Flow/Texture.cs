@@ -1,6 +1,4 @@
-﻿using System.Reflection.Metadata.Ecma335;
-
-namespace Flow
+﻿namespace Flow
 {
     public class Texture : IDisposable
     {

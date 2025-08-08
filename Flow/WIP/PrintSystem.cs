@@ -1,4 +1,4 @@
-﻿namespace Flow
+﻿namespace Flow.WIP
 {
     /// <summary>
     /// 画面左上にログを出力するクラス
@@ -7,7 +7,7 @@
     {
         public static void Print(string message)
         {
-            System.Console.WriteLine(message);
+            Console.WriteLine(message);
         }
     }
 }

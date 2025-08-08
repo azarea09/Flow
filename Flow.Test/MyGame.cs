@@ -12,7 +12,7 @@
 
         protected override void Load()
         {
-            texture = new Texture("Desktop Screenshot 2025.08.05 - 04.34.32.08.png");
+            texture = new Texture("Shaders/MSDFTexture_CretaIcon.png");
         }
 
         protected override void Update()
@@ -28,7 +28,7 @@
             texture.Scale = new Vector2d(1);
             texture.Anchor = Anchor.Center;
             texture.Origin = Anchor.Center;
-            texture.Draw(0, 0);
+            texture.Draw(400, 0);
 
             Raylib_cs.Raylib.DrawFPS(10, 10);
             Raylib_cs.Raylib.DrawText($"DeltaTime {Flow.DeltaTime}", 10, 30, 20, Raylib_cs.Color.Red);
