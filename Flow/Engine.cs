@@ -1,6 +1,6 @@
 ﻿namespace Flow
 {
-    public static class Flow
+    public static class Engine
     {
         /// <summary> 現在FPS </summary>
         public static int CurrentFPS { get; internal set; }

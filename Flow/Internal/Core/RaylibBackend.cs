@@ -1,5 +1,4 @@
 ﻿using Flow.Internal.Platform.Windows;
-using System.Numerics;
 
 namespace Flow.Internal.Core
 {
@@ -28,15 +27,15 @@ namespace Flow.Internal.Core
             {
                 Raylib.SetConfigFlags(ConfigFlags.UndecoratedWindow);
             }
-            if (Flow.MaxFPS > 0)
+            if (Engine.MaxFPS > 0)
             {
-                Raylib.SetTargetFPS(Flow.MaxFPS);
+                Raylib.SetTargetFPS(Engine.MaxFPS);
             }
-            if (Flow.Vsync)
+            if (Engine.Vsync)
             {
                 Raylib.SetConfigFlags(ConfigFlags.VSyncHint);
             }
-            if (!Flow.IsLogEnabled)
+            if (!Engine.IsLogEnabled)
             {
                 Raylib.SetTraceLogLevel(TraceLogLevel.None);
             }
@@ -87,9 +86,9 @@ namespace Flow.Internal.Core
 
         public void Update()
         {
-            Flow.CurrentFPS = Raylib.GetFPS();
-            Flow.DeltaTime = Raylib.GetFrameTime();
-            Flow.Time = Raylib.GetTime();
+            Engine.CurrentFPS = Raylib.GetFPS();
+            Engine.DeltaTime = Raylib.GetFrameTime();
+            Engine.Time = Raylib.GetTime();
 
             // ----------------------------
             // ウィンドウサイズ変更の検出と同期
@@ -114,10 +113,10 @@ namespace Flow.Internal.Core
             // ----------------------------
             // タイトル更新（1秒に1回）
             // ----------------------------
-            if (Flow.Time - _lastTitleUpdateTime >= TitleUpdateInterval)
+            if (Engine.Time - _lastTitleUpdateTime >= TitleUpdateInterval)
             {
                 SetTitleWithFPS();
-                _lastTitleUpdateTime = Flow.Time;
+                _lastTitleUpdateTime = Engine.Time;
             }
         }
 
@@ -130,14 +129,14 @@ namespace Flow.Internal.Core
             if (_isDirectDraw || !RenderSurface.UseRenderSurface)
             {
                 Raylib.BeginDrawing();
-                Raylib.ClearBackground(Flow.BackgroundColor);
+                Raylib.ClearBackground(Engine.BackgroundColor);
                 drawCallback.Invoke();
                 Raylib.EndDrawing();
                 return;
             }
 
             Raylib.BeginTextureMode(_target);
-            Raylib.ClearBackground(Flow.BackgroundColor);
+            Raylib.ClearBackground(Engine.BackgroundColor);
             drawCallback.Invoke();
             Raylib.EndTextureMode();
 
@@ -228,7 +227,7 @@ namespace Flow.Internal.Core
         private static void SetTitleWithFPS()
         {
             if (!Window.ShowInfoTitle) return;
-            Raylib.SetWindowTitle(RenderSurface.UseRenderSurface ? $"{Window.Title} | FPS {Flow.CurrentFPS} | W {Window.Size.X}x{Window.Size.Y} | RS {RenderSurface.Size.X}x{RenderSurface.Size.Y}" : $"{Window.Title} | FPS {Flow.CurrentFPS} | W {Window.Size.X}x{Window.Size.Y}");
+            Raylib.SetWindowTitle(RenderSurface.UseRenderSurface ? $"{Window.Title} | FPS {Engine.CurrentFPS} | W {Window.Size.X}x{Window.Size.Y} | RS {RenderSurface.Size.X}x{RenderSurface.Size.Y}" : $"{Window.Title} | FPS {Engine.CurrentFPS} | W {Window.Size.X}x{Window.Size.Y}");
         }
         #endregion
     }

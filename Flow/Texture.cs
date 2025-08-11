@@ -99,8 +99,8 @@
         public void Dispose()
         {
             Raylib.UnloadTexture(RayTexture);
-            IsEnable = false;
             GC.SuppressFinalize(this);
+            IsEnable = false;
         }
 
         ~Texture()
