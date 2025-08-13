@@ -1,8 +1,12 @@
-﻿namespace Flow.Test
+﻿using Raylib_cs;
+
+namespace Flow.Test
 {
     public class MyGame : Game
     {
         private Audio audio;
+        private TaikoAtlasFont font;
+        private Texture texture;
 
         protected override void Init()
         {
@@ -13,7 +17,8 @@
         protected override void Load()
         {
             audio = new Audio("1・2・さんしのでドンドカッカッ！.ogg");
-
+            font = new TaikoAtlasFont("font\\jp_64.dds", "font\\jp_64.xml");
+            texture = new Texture("Desktop Screenshot 2025.08.13 - 14.15.16.80.png");
         }
 
         protected override void Update()
@@ -64,6 +69,9 @@
             Raylib_cs.Raylib.DrawText($"audio.Duration {audio.Duration}", 10, y += 20, 20, Raylib_cs.Color.Magenta);
             Raylib_cs.Raylib.DrawText($"audio.Position {audio.Position}", 10, y += 20, 20, Raylib_cs.Color.Magenta);
             Raylib_cs.Raylib.DrawText($"audio.ActiveInstanceCount {audio.ActiveInstanceCount}", 10, y += 20, 20, Raylib_cs.Color.Magenta);
+
+            font.Draw(0, 0, "あいうえお・かきくけこ♡♪★™", Vector2d.One, 127, Anchor.Center, 6, Color4.Magenta);
+            font.Draw(0, 0, "あいうえお・かきくけこ♡♪★™", Vector2d.One, 255, Anchor.Center, 0, Color4.Magenta, Color4.Black);
         }
 
         protected override void End()

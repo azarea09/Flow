@@ -130,7 +130,9 @@ namespace Flow
 
         public static Raylib_cs.Color ToRaylibColorWithOpacity(Color3 c, double opacity)
         {
-            return new Raylib_cs.Color((byte)c.R, (byte)c.G, (byte)c.B, (byte)opacity);
+            // AlphaPremultiplyをテスクチャの描画に使っているため,
+            // Colorに対してopacityを掛ける
+            return new Raylib_cs.Color((byte)(c.R * (opacity / 255.0)), (byte)(c.G * (opacity / 255.0)), (byte)(c.B * (opacity / 255.0)), (byte)opacity);
         }
     }
 }

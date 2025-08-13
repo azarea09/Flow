@@ -121,7 +121,7 @@
         internal static void MoveOnlyProp(Vector2i pos)
         {
             _isMoveOnlyProp = true;
-            Position = new Vector2i((int)pos.X, (int)pos.Y);
+            Position = new Vector2i(pos.X, pos.Y);
             _isMoveOnlyProp = false;
         }
     }

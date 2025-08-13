@@ -6,6 +6,8 @@
         public Texture2D RayTexture { get; private set; }
         /// <summary> テクスチャが有効かどうか </summary>
         public bool IsEnable { get; private set; } = false;
+        /// <summary> RenderTexture2Dから読み込んだかどうか </summary>
+        public bool IsFromRenderTexture { get; private set; } = false;  
         /// <summary> テクスチャのファイル名 </summary>
         public string FileName { get; private set; } = string.Empty;
         /// <summary> テクスチャのサイズ (px) </summary>
@@ -32,7 +34,7 @@
             get => _filter;
             set
             {
-                if (IsEnable) 
+                if (IsEnable)
                 {
                     _filter = value;
                     Raylib.SetTextureFilter(RayTexture, (TextureFilter)value);
@@ -60,7 +62,21 @@
             }
 
             IsEnable = true;
+            IsFromRenderTexture = false;
             FileName = path;
+            Size = new Vector2d(RayTexture.Width, RayTexture.Height);
+        }
+
+        public Texture(RenderTexture2D renderTexture, Filter filter = Filter.Nearest)
+        {
+            RayTexture = renderTexture.Texture;
+            if (RayTexture.Id == 0)
+            {
+                throw new Exception($"Failed to load texture from RenderTexture2D");
+            }
+
+            IsEnable = true;
+            IsFromRenderTexture = true;
             Size = new Vector2d(RayTexture.Width, RayTexture.Height);
         }
 
@@ -73,18 +89,29 @@
                 drawArea = new Rectd(0, 0, Size.X, Size.Y);
             }
 
-            Vector2d drawAreaSize = new Vector2d((drawArea.Value.Width - drawArea.Value.X), drawArea.Value.Height - drawArea.Value.Y);
+            // drawAreaSize は幅と高さをそのまま使う
+            Vector2d drawAreaSize = new Vector2d(drawArea.Value.Width, drawArea.Value.Height);
             Vector2d screenSize = RenderSurface.UseRenderSurface ? RenderSurface.Size : Window.Size;
 
-            // テクスチャから描画に使う範囲
-            Rectangle sourceRect = new Rectangle((float)drawArea.Value.X, (float)drawArea.Value.Y, (float)drawArea.Value.Width, (float)drawArea.Value.Height);
-            // 描画先の矩形
-            Rectangle destRect = new Rectangle((float)x, (float)y, (float)(drawAreaSize.X * Scale.X), (float)(drawAreaSize.Y * Scale.Y));
+            // 切り抜き元の矩形 (RenderTextureの場合上下反転させる)
+            Rectangle sourceRect = new Rectangle(
+                (float)drawArea.Value.X,
+                (float)drawArea.Value.Y,
+                (float)drawAreaSize.X,
+                IsFromRenderTexture == true ? -(float)drawAreaSize.Y : (float)drawAreaSize.Y
+            );
+
+            // 描画先の矩形（スケール適用）
+            Rectangle destRect = new Rectangle(
+                (float)x,
+                (float)y,
+                (float)(drawAreaSize.X * Scale.X),
+                (float)(drawAreaSize.Y * Scale.Y)
+            );
 
             SetBlend(BlendState);
 
-            Raylib.DrawTexturePro
-            (
+            Raylib.DrawTexturePro(
                 RayTexture,
                 sourceRect,
                 destRect,
@@ -95,6 +122,7 @@
 
             Rlgl.SetBlendMode(BlendMode.Alpha);
         }
+
 
         public void Dispose()
         {
@@ -117,7 +145,7 @@
                     break;
                 case BlendState.Additive:
                     Rlgl.SetBlendFactorsSeparate(Rlgl.ONE, Rlgl.ONE, Rlgl.ONE, Rlgl.ONE, Rlgl.FUNC_ADD, Rlgl.FUNC_ADD);
-                    Rlgl.SetBlendMode(BlendMode.CustomSeparate); 
+                    Rlgl.SetBlendMode(BlendMode.CustomSeparate);
                     break;
                 case BlendState.Subtract:
                     Rlgl.SetBlendFactorsSeparate(Rlgl.ONE, Rlgl.ONE, Rlgl.ONE, Rlgl.ONE, Rlgl.FUNC_REVERSE_SUBTRACT, Rlgl.FUNC_ADD);
@@ -134,7 +162,7 @@
                 default:
                     break;
             }
-        }   
+        }
 
         private Vector2d GetAnchorOffset(Vector2d screenSize)
         {
@@ -158,15 +186,15 @@
         {
             return Origin switch
             {
-                Anchor.TopLeft =>       Vector2d.Zero,
-                Anchor.TopCenter =>     new Vector2d(drawAreaSize.X * 0.5, 0),
-                Anchor.TopRight =>      new Vector2d(drawAreaSize.X, 0),
-                Anchor.CenterLeft =>    new Vector2d(0, drawAreaSize.Y * 0.5),
-                Anchor.Center =>        new Vector2d(drawAreaSize.X * 0.5, drawAreaSize.Y * 0.5),
-                Anchor.CenterRight =>   new Vector2d(drawAreaSize.X, drawAreaSize.Y * 0.5),
-                Anchor.BottomLeft =>    new Vector2d(0, drawAreaSize.Y),
-                Anchor.BottomCenter =>  new Vector2d(drawAreaSize.X * 0.5, drawAreaSize.Y),
-                Anchor.BottomRight =>   new Vector2d(drawAreaSize.X, drawAreaSize.Y),
+                Anchor.TopLeft => Vector2d.Zero,
+                Anchor.TopCenter => new Vector2d(drawAreaSize.X * 0.5, 0),
+                Anchor.TopRight => new Vector2d(drawAreaSize.X, 0),
+                Anchor.CenterLeft => new Vector2d(0, drawAreaSize.Y * 0.5),
+                Anchor.Center => new Vector2d(drawAreaSize.X * 0.5, drawAreaSize.Y * 0.5),
+                Anchor.CenterRight => new Vector2d(drawAreaSize.X, drawAreaSize.Y * 0.5),
+                Anchor.BottomLeft => new Vector2d(0, drawAreaSize.Y),
+                Anchor.BottomCenter => new Vector2d(drawAreaSize.X * 0.5, drawAreaSize.Y),
+                Anchor.BottomRight => new Vector2d(drawAreaSize.X, drawAreaSize.Y),
                 _ => Vector2d.Zero,
             };
         }

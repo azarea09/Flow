@@ -38,8 +38,8 @@ namespace Flow
                 // フェード中の場合はフェード音量を優先
                 var first = _instances.LastOrDefault();
                 return first?.IsFading == true
-                    ? (first?.FadeVolume ?? _initialVolume)
-                    : (first?.Volume ?? _initialVolume);
+                    ? first?.FadeVolume ?? _initialVolume
+                    : first?.Volume ?? _initialVolume;
             }
             set
             {
@@ -152,7 +152,8 @@ namespace Flow
 
             // 自動停止のスケジューリング
             var stopDelay = duration - (fadeOut ?? TimeSpan.Zero);
-            Task.Delay(stopDelay).ContinueWith(_ => {
+            Task.Delay(stopDelay).ContinueWith(_ =>
+            {
                 if (!instance.IsDisposed)
                     instance.Stop(fadeOut);
             }, TaskScheduler.Default);
