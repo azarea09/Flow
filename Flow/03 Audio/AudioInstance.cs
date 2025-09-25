@@ -65,7 +65,7 @@ namespace Flow
             get => _volume;
             set
             {
-                _volume = Math.Clamp(value, 0.0, 1.0);
+                _volume = Math.Max(0.0, value);
                 UpdateVolumeAttribute();
             }
         }

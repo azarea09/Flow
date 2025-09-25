@@ -33,4 +33,12 @@
     <PackageReference Include="Raylib-cs" Version="7.0.1" />
   </ItemGroup>
 
+  <ItemGroup>
+  	<None Include="..\ThirdParty\*">
+  		<Link>%(Filename)%(Extension)</Link>
+  		<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+  		<Visible>False</Visible>
+  	</None>
+  </ItemGroup>
+
 </Project>
