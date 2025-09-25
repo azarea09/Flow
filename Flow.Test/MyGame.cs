@@ -10,7 +10,7 @@ namespace Flow.Test
         protected override void Init()
         {
             Engine.MaxFPS = 0;
-            Window.IsUseDarkMode = true;
+            Window.WindowTheme = WindowTheme.Dark;
             RenderSurface.Size = new Vector2i(1920, 1080);
         }
 

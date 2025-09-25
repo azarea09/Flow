@@ -26,8 +26,8 @@
         /// <summary> タイトルにFPSなどの情報を出すかどうか </summary>
         public static bool ShowInfoTitle { get; set; } = true;
 
-        /// <summary> タイトルをダークモードにするかどうか </summary>
-        public static bool IsUseDarkMode { get; set; } = false;
+        /// <summary> ウィンドウのテーマにするかどうか </summary>
+        public static WindowTheme WindowTheme { get; set; } = WindowTheme.Dark;
 
         /// <summary> ウィンドウのサイズ (px) </summary>
         public static Vector2i Size
@@ -124,5 +124,11 @@
             Position = new Vector2i(pos.X, pos.Y);
             _isMoveOnlyProp = false;
         }
+    }
+    public enum WindowTheme
+    {
+        Dark,
+        Light,
+        UserTheme
     }
 }

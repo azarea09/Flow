@@ -58,11 +58,22 @@ namespace Flow.Internal.Core
             // ----------------------------
             // ダークモード適応 
             // ----------------------------
-            if (Window.IsUseDarkMode && OperatingSystem.IsWindows())
+            if (OperatingSystem.IsWindows())
             {
                 nint hwnd = (nint)Raylib.GetWindowHandle();
-                Win32Api.SetDarkModeTitleBar(hwnd, true);
                 Win32Api.RefreshWindowLayout(hwnd);
+
+                switch (Window.WindowTheme)
+                {
+                    case WindowTheme.Light:
+                        break;
+                    case WindowTheme.Dark:
+                        Win32Api.SetDarkModeTitleBar(hwnd, true);
+                        break;
+                    case WindowTheme.UserTheme:
+                        Win32Api.SetDarkModeTitleBar(hwnd, Win32Api.IsDarkModeEnabled());
+                        break;
+                }
             }
 
             // ----------------------------
