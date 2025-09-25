@@ -7,7 +7,7 @@
         /// <summary> テクスチャが有効かどうか </summary>
         public bool IsEnable { get; private set; } = false;
         /// <summary> RenderTexture2Dから読み込んだかどうか </summary>
-        public bool IsFromRenderTexture { get; private set; } = false;  
+        public bool IsFromRenderTexture { get; private set; } = false;
         /// <summary> テクスチャのファイル名 </summary>
         public string FileName { get; private set; } = string.Empty;
         /// <summary> テクスチャのサイズ (px) </summary>
