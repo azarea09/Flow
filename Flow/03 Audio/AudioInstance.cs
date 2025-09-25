@@ -115,33 +115,33 @@ namespace Flow
         /// <summary>再生開始</summary>
         public void Play()
         {
-            Console.WriteLine("=== 再生開始 ===");
+            //Console.WriteLine("=== 再生開始 ===");
 
             if (_disposed)
             {
-                Console.WriteLine("インスタンスは既に破棄されています");
+                //Console.WriteLine("インスタンスは既に破棄されています");
                 return;
             }
 
             if (!IsHandleValid)
             {
-                Console.WriteLine("無効なハンドル");
+                //Console.WriteLine("無効なハンドル");
                 return;
             }
 
-            Console.WriteLine($"ハンドル: {_handle}, ミキサー: {AudioManager.Mixer}");
+            //Console.WriteLine($"ハンドル: {_handle}, ミキサー: {AudioManager.Mixer}");
 
             Position = 0; // 先頭に戻す
 
             if (BassMix.BASS_Mixer_ChannelPlay(_handle))
             {
                 LogPlaybackStatus();
-                Console.WriteLine("再生開始成功");
+                //Console.WriteLine("再生開始成功");
             }
             else
             {
                 var error = Bass.BASS_ErrorGetCode();
-                Console.WriteLine($"再生開始失敗: {error}");
+                //Console.WriteLine($"再生開始失敗: {error}");
             }
         }
 
@@ -154,11 +154,11 @@ namespace Flow
             }
             else if (IsHandleValid)
             {
-                Console.WriteLine("=== 再生停止 ===");
-                Console.WriteLine($"ハンドル: {_handle}");
+                //Console.WriteLine("=== 再生停止 ===");
+                //Console.WriteLine($"ハンドル: {_handle}");
                 if (!BassMix.BASS_Mixer_ChannelPause(_handle))
                 {
-                    Console.WriteLine($"停止エラー: {Bass.BASS_ErrorGetCode()}");
+                    //Console.WriteLine($"停止エラー: {Bass.BASS_ErrorGetCode()}");
                 }
             }
         }
@@ -187,7 +187,7 @@ namespace Flow
             _fadeSpeed = _fadeTarget / duration.TotalSeconds;
             _stopAfterFade = false;
 
-            Console.WriteLine($"フェードイン開始: 速度={_fadeSpeed:F3}");
+            //Console.WriteLine($"フェードイン開始: 速度={_fadeSpeed:F3}");
         }
 
         /// <summary>フェードアウト</summary>
@@ -203,7 +203,7 @@ namespace Flow
             _fadeSpeed = _fadeVolume / duration.TotalSeconds;
             _stopAfterFade = true;
 
-            Console.WriteLine($"フェードアウト開始: 速度={_fadeSpeed:F3}");
+            //Console.WriteLine($"フェードアウト開始: 速度={_fadeSpeed:F3}");
         }
 
         /// <summary>指定音量までフェード</summary>
@@ -247,17 +247,17 @@ namespace Flow
         {
             if (_disposed) return;
 
-            Console.WriteLine($"AudioInstance破棄 - ハンドル: {_handle}");
+            //Console.WriteLine($"AudioInstance破棄 - ハンドル: {_handle}");
 
             if (IsHandleValid)
             {
                 // ミキサーから削除
                 var removeResult = BassMix.BASS_Mixer_ChannelRemove(_handle);
-                Console.WriteLine($"ミキサーから削除: {removeResult}");
+                //Console.WriteLine($"ミキサーから削除: {removeResult}");
 
                 // ストリーム解放
                 var freeResult = Bass.BASS_StreamFree(_handle);
-                Console.WriteLine($"ストリーム解放: {freeResult}");
+                //Console.WriteLine($"ストリーム解放: {freeResult}");
 
                 _handle = INVALID_HANDLE;
             }
@@ -267,7 +267,7 @@ namespace Flow
         /// <summary>音声ストリームの読み込みと初期化</summary>
         private void LoadAudioStream(string filePath, bool loop)
         {
-            Console.WriteLine($"=== 音声読み込み開始: {filePath} ===");
+            //Console.WriteLine($"=== 音声読み込み開始: {filePath} ===");
 
             // 基本デコードストリーム作成
             var baseStream = Bass.BASS_StreamCreateFile(filePath, 0L, 0L,
@@ -287,7 +287,7 @@ namespace Flow
                 ConfigureStream(loop);
                 AddToMixer();
 
-                Console.WriteLine("音声読み込み完了");
+                //Console.WriteLine("音声読み込み完了");
             }
             catch
             {
@@ -308,7 +308,7 @@ namespace Flow
         /// <summary>ミキサーに追加</summary>
         private void AddToMixer()
         {
-            Console.WriteLine($"ミキサーID: {AudioManager.Mixer}");
+            //Console.WriteLine($"ミキサーID: {AudioManager.Mixer}");
 
             if (!BassMix.BASS_Mixer_StreamAddChannel(AudioManager.Mixer, _handle, BASSFlag.BASS_SPEAKER_FRONT))
             {
@@ -320,7 +320,7 @@ namespace Flow
 
             // 初期状態で一時停止
             BassMix.BASS_Mixer_ChannelPause(_handle);
-            Console.WriteLine("ミキサーに追加完了");
+            //Console.WriteLine("ミキサーに追加完了");
         }
 
         /// <summary>チャンネル属性の設定</summary>
@@ -330,7 +330,7 @@ namespace Flow
 
             if (!Bass.BASS_ChannelSetAttribute(_handle, attr, value))
             {
-                Console.WriteLine($"属性設定失敗 {attr}={value}: {Bass.BASS_ErrorGetCode()}");
+                //Console.WriteLine($"属性設定失敗 {attr}={value}: {Bass.BASS_ErrorGetCode()}");
             }
         }
 
@@ -342,7 +342,7 @@ namespace Flow
             float value = 0f;
             if (!Bass.BASS_ChannelGetAttribute(_handle, attr, ref value))
             {
-                Console.WriteLine($"属性取得失敗 {attr}: {Bass.BASS_ErrorGetCode()}");
+                //Console.WriteLine($"属性取得失敗 {attr}: {Bass.BASS_ErrorGetCode()}");
             }
             return value;
         }
@@ -352,7 +352,7 @@ namespace Flow
         {
             // 聴覚特性を考慮した対数カーブ適用
             var actualVolume = (float)Math.Pow(_volume * _fadeVolume, VOLUME_CURVE_EXPONENT);
-            Console.WriteLine($"音量更新: ベース音量={_volume:F2}, 現在の音量(見かけ上)={_fadeVolume:F2}, 現在の音量(実際の値)={actualVolume:F2}");
+            //Console.WriteLine($"音量更新: ベース音量={_volume:F2}, 現在の音量(見かけ上)={_fadeVolume:F2}, 現在の音量(実際の値)={actualVolume:F2}");
             SetAttribute(BASSAttribute.BASS_ATTRIB_VOL, actualVolume);
         }
 
@@ -386,14 +386,14 @@ namespace Flow
 
             Bass.BASS_ChannelGetAttribute(_handle, BASSAttribute.BASS_ATTRIB_VOL, ref vol);
 
-            Console.WriteLine($"再生状態: {status}, 位置: {position}, 音量: {vol:F2}");
+            //Console.WriteLine($"再生状態: {status}, 位置: {position}, 音量: {vol:F2}");
         }
 
         /// <summary>チャンネル情報ログ出力</summary>
         private void LogChannelInfo()
         {
             var info = Bass.BASS_ChannelGetInfo(_handle);
-            Console.WriteLine($"チャンネル情報: 周波数={info.freq}Hz, チャンネル={info.chans}ch, タイプ={info.ctype}");
+            //Console.WriteLine($"チャンネル情報: 周波数={info.freq}Hz, チャンネル={info.chans}ch, タイプ={info.ctype}");
         }
     }
 }

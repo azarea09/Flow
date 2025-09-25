@@ -79,7 +79,6 @@ namespace Flow
             {
                 outlinedTex = GetOrCreateOutlinedCache(text, edge, backColor.Value, foreColor.Value);
             }
-            Console.WriteLine(x);
 
             // ----------------------------
             // 描画
