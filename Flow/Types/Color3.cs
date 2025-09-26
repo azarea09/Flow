@@ -61,7 +61,7 @@ namespace Flow
         }
 
         /// <summary> HTMLカラーコード (#RGB, #RGBA, #RRGGBB, #RRGGBBAA) から変換 </summary>
-        public static Color3 FromHtml(string html)
+        public static Color3 FromHtml(string html, bool isAlphaFirst = false)
         {
             if (string.IsNullOrWhiteSpace(html))
                 throw new ArgumentException("HTML color string is null or empty.");
@@ -91,9 +91,9 @@ namespace Flow
                     );
                 case 8: // #RRGGBBAA
                     return new Color3(
-                        int.Parse(html.Substring(0, 2), NumberStyles.HexNumber),
-                        int.Parse(html.Substring(2, 2), NumberStyles.HexNumber),
-                        int.Parse(html.Substring(4, 2), NumberStyles.HexNumber)
+                        int.Parse(isAlphaFirst ? html.Substring(2, 2) : html.Substring(0, 2), NumberStyles.HexNumber),
+                        int.Parse(isAlphaFirst ? html.Substring(4, 2) : html.Substring(2, 2), NumberStyles.HexNumber),
+                        int.Parse(isAlphaFirst ? html.Substring(6, 2) : html.Substring(4, 2), NumberStyles.HexNumber)
                         );
                 default:
                     throw new FormatException("Invalid HTML color format.");

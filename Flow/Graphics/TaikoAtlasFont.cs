@@ -3,7 +3,7 @@
 namespace Flow
 {
     /// <summary>
-    /// 太鼓の達人のアトラスフォントを扱うクラス。
+    /// 太鼓の達人(AC16, PS4, NS)のアトラスフォントを扱うクラス。
     /// </summary>
     public class TaikoAtlasFont
     {
