@@ -1,29 +1,36 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<!-- Unsafeを許可 -->
+		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+		<!-- NativeAOTを有効に -->
+		<PublishAot>true</PublishAot>
+		<IsAotCompatible>true</IsAotCompatible>
+		<!-- 不要なシンボル除去 -->
+		<StripSymbols>true</StripSymbols>
+		<!-- 不要なメタデータ削減 -->
+		<IlcGenerateCompleteTypeMetadata>false</IlcGenerateCompleteTypeMetadata>
+		<!-- グローバル化コード削減 -->
+		<InvariantGlobalization>true</InvariantGlobalization>
+		<!-- 明示的に速度優先 -->
+		<OptimizationPreference>Speed</OptimizationPreference>
+	</PropertyGroup>
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-	<!-- NativeAOTを有効に -->
-	<PublishAot>true</PublishAot>
-	<!-- 不要なシンボル除去 -->
-	<StripSymbols>truea	</StripSymbols>
-	<!-- 不要なメタデータ削減 -->
-	<IlcGenerateCompleteTypeMetadata>false</IlcGenerateCompleteTypeMetadata>
-	<!-- グローバル化コード削減 -->
-	<InvariantGlobalization>true</InvariantGlobalization>
-	<!-- 明示的に速度優先 -->
-	<OptimizationPreference>Speed</OptimizationPreference>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<Optimize>false</Optimize>
+		<DebugType>embedded</DebugType>
+	</PropertyGroup>
 
-  <!-- Releaseビルドのときだけ .pdb を生成しない -->
-  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
-  	<DebugType>none</DebugType>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<Optimize>true</Optimize>
+		<DebugType>none</DebugType>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Flow\Flow.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Flow\Flow.csproj" />
+	</ItemGroup>
 
 </Project>
